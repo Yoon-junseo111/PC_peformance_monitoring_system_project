@@ -1,0 +1,4 @@
+customtkinter  # 앱 UI
+psutil         # CPU / RAM 정보
+nvidia-ml-py   # NVIDIA GPU 정보
+matplotlib     # 실시간 그래프
