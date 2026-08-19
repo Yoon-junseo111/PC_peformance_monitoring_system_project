@@ -123,12 +123,6 @@ python main.py
 ---
 
 ## 개발 예정 기능
-
-- CPU 상세 정보
-- CPU 실시간 사용률 그래프
-- GPU 상세 페이지
-- RAM 상세 페이지
-- GPU 온도 및 VRAM 모니터링
 - Settings 페이지
 - Dark / Light Mode
 - Disk 모니터링
@@ -140,4 +134,4 @@ python main.py
 
 🚧 **Development in Progress**
 
-현재 Dashboard와 CPU 페이지를 중심으로 UI 및 모니터링 기능을 개발하고 있습니다.
+현재 UI 및 모니터링 기능을 개발하고 있습니다.
