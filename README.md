@@ -277,9 +277,9 @@ python main.py
 다음 단계에서는 Disk 및 Network 모니터링 기능을 추가하고 전체 UI를 개선할 예정입니다.
 
 
-## 📸 Screenshots
+## 📸 Result_Screenshots
 
-### Dashboard
+### Dashboard_result
 
 ![Dashboard_page](result/dashboard.png)
 
