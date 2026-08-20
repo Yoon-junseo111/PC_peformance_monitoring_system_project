@@ -283,14 +283,18 @@ python main.py
 
 ![Dashboard_page](result/dashboard.png)
 
-### CPU
+### CPU_result
 
 ![CPU_page](result/cpu.png)
 
-### GPU
+### GPU_result
 
 ![GPU_page](result/gpu.png)
 
-### RAM
+### RAM_result
 
 ![RAM_page](result/ram.png)
+
+### Settings_result
+
+![settings_page](result/settings.png)
