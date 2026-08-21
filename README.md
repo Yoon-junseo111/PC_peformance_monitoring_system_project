@@ -276,12 +276,37 @@ python main.py
 
 다음 단계에서는 Disk 및 Network 모니터링 기능을 추가하고 전체 UI를 개선할 예정입니다.
 
+### Disk Monitoring
 
-## 📸 Result_Screenshots
+- Disk 전체 용량 확인
+- Disk 사용량 및 여유 공간 확인
+- Disk 사용률 실시간 모니터링
+- Disk Read / Write 데이터 모니터링
+- Disk 상태 실시간 그래프 제공
+
+
+### Network Monitoring
+
+- 실시간 Download 속도 모니터링
+- 실시간 Upload 속도 모니터링
+- 누적 수신 데이터 확인
+- 누적 송신 데이터 확인
+- Download / Upload 실시간 그래프 제공
+
+
+Dashboard에서 주요 시스템 상태를 한눈에 확인할 수 있습니다.
+
+- CPU 사용률
+- GPU 사용률
+- RAM 사용률
+- Disk 사용률
+- Network Download / Upload 속도
+
+## Result_screenshot
 
 ### Dashboard_result
 
-![Dashboard_page](result/dashboard.png)
+![Dashboard_page](result/dashboard2.png)
 
 ### CPU_result
 
@@ -298,3 +323,11 @@ python main.py
 ### Settings_result
 
 ![settings_page](result/settings.png)
+
+### Disk_result
+
+![Disk_page](result/disk.png)
+
+### Network_result
+
+![Network_page](result/network.png)

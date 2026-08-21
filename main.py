@@ -11,6 +11,8 @@ from ui.CPU_page import CPUPage
 from ui.GPU_page import GPUPage
 from ui.RAM_page import RAMPage
 from ui.settings import SettingsPage
+from ui.disk_page import DiskPage
+from ui.network_page import NetworkPage
 
 
 # ==================================================
@@ -167,6 +169,37 @@ class PCMonitorApp(ctk.CTk):
             fill="x"
         )
 
+        # =================================================
+        # Disk 버튼
+        # ==================================================
+
+        self.disk_button = ctk.CTkButton(
+                self.sidebar,
+                text="Disk",
+                command=lambda: self.show_page("disk")
+            )
+
+        self.disk_button.pack(
+                padx=20,
+                pady=10,
+                fill="x"
+            )
+
+        # ==================================================
+        # Network 버튼
+        # ==================================================
+
+        self.network_button = ctk.CTkButton(
+            self.sidebar,
+            text="Network",
+            command=lambda: self.show_page("network")
+        )
+
+        self.network_button.pack(
+            padx=20,
+            pady=10,
+            fill="x"
+)
 
         # ==================================================
         # Settings 버튼
@@ -207,7 +240,7 @@ class PCMonitorApp(ctk.CTk):
 
         # ==================================================
         # 페이지 생성
-        # ==================================================
+        # =================================================
 
         # 각 페이지 객체를 dictionary에 저장
         self.pages = {
@@ -215,7 +248,9 @@ class PCMonitorApp(ctk.CTk):
             "cpu": CPUPage(self.page_container),
             "gpu": GPUPage(self.page_container),
             "ram": RAMPage(self.page_container),
-            "settings": SettingsPage(self.page_container)
+            "disk": DiskPage(self.page_container),
+            "settings": SettingsPage(self.page_container),
+            "network": NetworkPage(self.page_container),
         }
 
 
@@ -266,3 +301,4 @@ if __name__ == "__main__":
 
     # GUI 실행
     app.mainloop()
+        
