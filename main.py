@@ -236,8 +236,13 @@ class PCMonitorApp(ctk.CTk):
         # 페이지가 창 크기에 맞게 늘어나도록 설정
         self.page_container.grid_rowconfigure(0, weight=1)
         self.page_container.grid_columnconfigure(0, weight=1)
+        
+        # ==================================================
+        # 현재 활성 페이지
+        # ==================================================
 
-
+        self.current_page = "dashboard"
+ 
         # ==================================================
         # 페이지 생성
         # =================================================
@@ -246,7 +251,7 @@ class PCMonitorApp(ctk.CTk):
         self.pages = {
             "dashboard": DashboardPage(self.page_container),
             "cpu": CPUPage(self.page_container),
-            "gpu": GPUPage(self.page_container),
+            "gpu": GPUPage(self.page_container, self),
             "ram": RAMPage(self.page_container),
             "disk": DiskPage(self.page_container),
             "settings": SettingsPage(self.page_container),
@@ -283,12 +288,14 @@ class PCMonitorApp(ctk.CTk):
 
     def show_page(self, page_name):
 
-        # dictionary에서 페이지 찾기
-        page = self.pages[page_name]
+           # 현재 활성 페이지 이름 저장
+           self.current_page = page_name
 
-        # 선택한 페이지를 가장 앞으로 가져오기
-        page.tkraise()
+           # 선택한 페이지 가져오기
+           page = self.pages[page_name]
 
+           # 선택한 페이지를 앞으로 가져오기
+           page.tkraise()
 
 # ==================================================
 # 프로그램 실행

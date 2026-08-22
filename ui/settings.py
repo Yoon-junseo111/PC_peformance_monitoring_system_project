@@ -282,7 +282,6 @@ class SettingsPage(ctk.CTkFrame):
         # 1초
         elif value == "1 second":
             config.UPDATE_INTERVAL = 1000
-
         # 2초
         elif value == "2 seconds":
             config.UPDATE_INTERVAL = 2000

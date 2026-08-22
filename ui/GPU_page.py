@@ -25,13 +25,14 @@ from monitor import get_gpu_info
 # CTkFrame을 상속받아서
 # 하나의 "페이지"처럼 사용할 수 있는 Frame을 생성
 class GPUPage(ctk.CTkFrame):
-
-    def __init__(self, parent):
+    
+    def __init__(self, parent, app):
 
         # 부모 클래스인 CTkFrame의 초기화 실행
         # parent는 main.py의 page_container가 들어오게 됨
         super().__init__(parent)
-
+        
+        self.app = app
 
         # ==================================================
         # 그래프에서 사용할 데이터 저장 공간
@@ -430,27 +431,40 @@ class GPUPage(ctk.CTkFrame):
         self.update_gpu_info()
 
 
-    # ==================================================
+        # ==================================================
     # GPU 정보를 1초마다 갱신하는 함수
     # ==================================================
 
     def update_gpu_info(self):
+        
+        # ==================================================
+        # 현재 GPU 페이지가 열려 있는지 확인
+        # ==================================================
 
-        # monitor.py의 get_gpu_info() 실행
-        #
-        # 예:
-        # {
-        #     "name": "NVIDIA GeForce RTX 4060",
-        #     "usage": 35,
-        #     "temperature": 62,
-        #     "vram_used": 3.25,
-        #     "vram_total": 8.00
-        # }
+
+        # 현재 화면이 GPU 페이지가 아니면
+        # GPU 정보와 그래프를 업데이트하지 않음
+        if self.app.current_page != "gpu":
+
+            # 잠시 후 다시 현재 페이지인지 확인
+            self.after(
+                1000,
+                self.update_gpu_info
+            )
+
+            return
+        
+        # ==================================================
+        # 현재 GPU 정보 가져오기
+        # ==================================================
+
+        # monitor.py의 get_gpu_info() 함수를 실행하여
+        # GPU 이름, 사용률, 온도, VRAM 정보를 가져옴
         gpu = get_gpu_info()
-
+        
 
         # ==================================================
-        # GPU 이름 갱신
+        # GPU 이름 표시
         # ==================================================
 
         self.gpu_name_label.configure(
@@ -459,48 +473,61 @@ class GPUPage(ctk.CTkFrame):
 
 
         # ==================================================
-        # GPU 사용률 숫자 갱신
+        # GPU 사용률 표시
         # ==================================================
 
-        # 예: 35%
-        self.gpu_usage_label.configure(
-            text=f"{gpu['usage']}%"
-        )
+        # GPU 사용률을 정상적으로 가져온 경우
+        if gpu["usage"] is not None:
 
+            # 현재 GPU 사용률 표시
+            self.gpu_usage_label.configure(
+                text=f"{gpu['usage']}%"
+            )
 
-        # ==================================================
-        # GPU 사용률 Progress Bar 갱신
-        # ==================================================
+            # Progress Bar는 0 ~ 1 사이 값을 사용하므로
+            # GPU 사용률을 100으로 나눠서 설정
+            self.gpu_progress.set(
+                gpu["usage"] / 100
+            )
 
-        # gpu["usage"]는 0~100 값
-        #
-        # ProgressBar는 0~1 값이 필요하므로
-        # 100으로 나눠줌
-        #
-        # 예:
-        # 35 / 100 = 0.35
-        self.gpu_progress.set(
-            gpu["usage"] / 100
-        )
+        # GPU 사용률을 가져오지 못한 경우
+        else:
 
+            # 실제 사용률 0%와
+            # 정보 조회 실패를 구분하기 위해 N/A 표시
+            self.gpu_usage_label.configure(
+                text="N/A"
+            )
 
-        # ==================================================
-        # GPU 온도 갱신
-        # ==================================================
-
-        self.temperature_label.configure(
-            text=f"{gpu['temperature']}°C"
-        )
+            # Progress Bar는 0으로 유지
+            self.gpu_progress.set(0)
 
 
         # ==================================================
-        # VRAM 사용량 텍스트 갱신
+        # GPU 온도 표시
         # ==================================================
 
-        # 소수점 둘째 자리까지 표시
-        #
-        # 예:
-        # 3.25 GB / 8.00 GB
+        # 온도 정보를 정상적으로 가져온 경우
+        if gpu["temperature"] is not None:
+
+            self.temperature_label.configure(
+                text=f"{gpu['temperature']}°C"
+            )
+
+        # 온도 정보를 가져오지 못한 경우
+        else:
+
+            self.temperature_label.configure(
+                text="N/A"
+            )
+
+
+        # ==================================================
+        # VRAM 사용량 표시
+        # ==================================================
+
+        # 현재 사용 중인 VRAM과
+        # 전체 VRAM을 GB 단위로 표시
         self.vram_label.configure(
             text=(
                 f"{gpu['vram_used']:.2f} GB / "
@@ -513,14 +540,10 @@ class GPUPage(ctk.CTkFrame):
         # VRAM 사용률 계산
         # ==================================================
 
-        # 0으로 나누는 오류를 방지하기 위해
-        # 전체 VRAM이 0보다 큰지 먼저 확인
+        # 전체 VRAM이 0보다 큰 경우에만 계산
+        # 0으로 나누는 오류를 방지하기 위한 조건
         if gpu["vram_total"] > 0:
 
-            # VRAM 사용 비율 계산
-            #
-            # 예:
-            # 4GB 사용 / 8GB 전체 = 0.5
             vram_percent = (
                 gpu["vram_used"]
                 / gpu["vram_total"]
@@ -528,12 +551,10 @@ class GPUPage(ctk.CTkFrame):
 
         else:
 
-            # 혹시 전체 VRAM이 0으로 들어오면
-            # Progress Bar를 0으로 유지
             vram_percent = 0
 
 
-        # VRAM Progress Bar 갱신
+        # VRAM Progress Bar 업데이트
         self.vram_progress.set(
             vram_percent
         )
@@ -543,26 +564,37 @@ class GPUPage(ctk.CTkFrame):
         # 그래프 데이터 추가
         # ==================================================
 
-        # 현재 시간 값을 X축 리스트에 추가
+        # 현재 시간을 X축 데이터에 추가
         self.time_data.append(
             self.counter
         )
 
-        # 현재 GPU 사용률을 Y축 리스트에 추가
-        self.gpu_data.append(
-            gpu["usage"]
-        )
 
-        # 다음 업데이트를 위해 시간 1 증가
+        # GPU 사용률을 정상적으로 가져온 경우
+        if gpu["usage"] is not None:
+
+            # 실제 GPU 사용률을 그래프 데이터로 저장
+            self.gpu_data.append(
+                gpu["usage"]
+            )
+
+        # GPU 사용률을 가져오지 못한 경우
+        else:
+
+            # 그래프 오류 방지를 위해 0 저장
+            self.gpu_data.append(0)
+
+
+        # 다음 업데이트를 위해 시간 값 증가
         self.counter += 1
 
 
         # ==================================================
-        # 최근 30개 데이터만 유지
+        # 그래프 데이터 개수 제한
         # ==================================================
 
-        # 데이터가 30개를 초과하면
-        # 가장 오래된 데이터를 하나 제거
+        # 데이터가 max_data 개수를 초과하면
+        # 가장 오래된 데이터부터 삭제
         if len(self.time_data) > self.max_data:
 
             self.time_data.pop(0)
@@ -571,26 +603,23 @@ class GPUPage(ctk.CTkFrame):
 
 
         # ==================================================
-        # 기존 그래프 지우기
+        # 기존 그래프 초기화
         # ==================================================
 
-        # 매초 새로운 그래프를 다시 그리기 때문에
-        # 기존 그래프를 먼저 초기화
+        # 새로운 데이터를 그리기 전에
+        # 기존 그래프를 제거
         self.ax.clear()
 
 
         # ==================================================
-        # 그래프 설정 다시 적용
+        # 그래프 설정
         # ==================================================
-
-        # clear()를 하면
-        # 제목, 축 설정, 격자도 모두 사라지기 때문에
-        # 다시 설정해야 함
 
         self.ax.set_title(
             "GPU Real-time Usage"
         )
 
+        # GPU 사용률 범위는 0 ~ 100%
         self.ax.set_ylim(
             0,
             100
@@ -610,41 +639,32 @@ class GPUPage(ctk.CTkFrame):
 
 
         # ==================================================
-        # GPU 사용률 선 그래프 그리기
+        # GPU 사용률 그래프 그리기
         # ==================================================
 
         self.ax.plot(
             self.time_data,
             self.gpu_data,
-
-            # 범례에 표시할 이름
             label="GPU",
-
-            # 선 두께
             linewidth=2
         )
 
-        # 범례 표시
+        # 그래프 범례 표시
         self.ax.legend()
 
 
         # ==================================================
-        # 화면에 그래프 다시 그리기
+        # 그래프 화면 업데이트
         # ==================================================
 
         self.canvas.draw()
 
 
         # ==================================================
-        # 1초 후 update_gpu_info 다시 실행
+        # 1초 후 다시 GPU 정보 업데이트
         # ==================================================
 
-        # after(1000, 함수)
-        #
-        # 1000ms = 1초
-        #
-        # 따라서 GPU 정보가 1초마다 계속 갱신됨
         self.after(
-            1000,
+            2000,
             self.update_gpu_info
         )
