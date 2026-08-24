@@ -1,119 +1,185 @@
 # PC Monitor
 
-Python으로 개발 중인 **실시간 PC 성능 모니터링 데스크톱 애플리케이션**입니다.
+Python으로 개발한 **실시간 PC 성능 모니터링 데스크톱 애플리케이션**입니다.
 
-CPU, NVIDIA GPU, RAM의 상태를 실시간으로 확인할 수 있으며,
-`CustomTkinter`를 사용하여 Dashboard와 각 하드웨어별 상세 모니터링 페이지를 구현했습니다.
+CPU, NVIDIA GPU, RAM, Disk, Network의 상태를 실시간으로 수집하고,
+각 시스템 자원의 사용량을 Progress Bar와 그래프를 통해 시각적으로 확인할 수 있도록 구현했습니다.
 
-또한 Settings 페이지를 통해 프로그램의 테마와 모니터링 설정을 변경할 수 있습니다.
+`CustomTkinter`를 활용하여 Dashboard와 하드웨어별 상세 모니터링 페이지를 구성했으며,
+Settings 페이지를 통해 테마, 업데이트 주기, 그래프 데이터 범위를 변경할 수 있습니다.
 
->  현재 개발 중인 프로젝트입니다.
+또한 시스템 정보 조회 과정에서 오류가 발생해도 프로그램 전체가 종료되지 않도록
+각 모니터링 기능에 예외 처리를 적용했습니다.
 
----
-
-## Features
-
-### Dashboard
-
-PC의 주요 하드웨어 상태를 한눈에 확인할 수 있는 메인 화면입니다.
-
-* CPU 사용률
-* GPU 사용률
-* RAM 사용률
-* 실시간 Progress Bar
-* 하드웨어 상태 실시간 업데이트
+> 현재 기능 안정화 및 UI 개선을 진행 중인 프로젝트입니다.
 
 ---
 
-### CPU Monitoring
+# Key Features
 
-CPU의 상세 정보를 실시간으로 확인할 수 있습니다.
+## Dashboard
 
-* CPU 이름
-* CPU 사용률
-* 물리 코어 수
-* 논리 코어 수
-* CPU 사용률 Progress Bar
-* 실시간 CPU 사용률 그래프
+PC의 주요 시스템 상태를 한 화면에서 빠르게 확인할 수 있는 메인 Dashboard입니다.
 
----
+- CPU 사용률
+- NVIDIA GPU 사용률
+- RAM 사용률
+- Disk 사용률
+- Network Download 속도
+- Network Upload 속도
+- 실시간 Progress Bar
+- 시스템 상태 실시간 업데이트
 
-### GPU Monitoring
-
-NVIDIA GPU의 상태를 실시간으로 확인할 수 있습니다.
-
-* GPU 이름
-* GPU 사용률
-* GPU 온도
-* VRAM 사용량
-* 전체 VRAM 용량
-* GPU 사용률 Progress Bar
-* VRAM Progress Bar
-* 실시간 GPU 사용률 그래프
-
-GPU 정보는 NVIDIA NVML을 이용하여 가져옵니다.
+Dashboard를 통해 각 상세 페이지에 들어가지 않아도
+현재 시스템의 주요 자원 상태를 한눈에 확인할 수 있습니다.
 
 ---
 
-### RAM Monitoring
+## CPU Monitoring
+
+CPU의 기본 정보와 실시간 사용률을 확인할 수 있습니다.
+
+### 제공 정보
+
+- CPU 이름
+- CPU 사용률
+- 물리 코어 수
+- 논리 코어 수
+- CPU 사용률 Progress Bar
+- 실시간 CPU 사용률 그래프
+
+CPU 정보는 `psutil`과 `platform`을 이용하여 수집합니다.
+
+---
+
+## GPU Monitoring
+
+NVIDIA GPU의 상태를 실시간으로 모니터링합니다.
+
+### 제공 정보
+
+- NVIDIA GPU 이름
+- GPU 사용률
+- GPU 온도
+- VRAM 사용량
+- 전체 VRAM 용량
+- GPU 사용률 Progress Bar
+- VRAM Progress Bar
+- 실시간 GPU 사용률 그래프
+
+GPU 정보는 **NVIDIA NVML**을 사용하여 수집합니다.
+
+일부 GPU 또는 Driver 환경에서는 특정 NVML 정보 조회가 실패할 수 있기 때문에,
+GPU 사용률 또는 온도를 정상적으로 가져오지 못한 경우 `N/A`로 표시하도록 처리했습니다.
+
+GPU 정보 조회 오류가 발생해도 프로그램 전체가 종료되지 않도록 예외 처리도 적용했습니다.
+
+---
+
+## RAM Monitoring
 
 시스템 메모리 상태를 실시간으로 확인할 수 있습니다.
 
-* RAM 사용률
-* 사용 중인 RAM
-* 사용 가능한 RAM
-* 전체 RAM 용량
-* RAM 사용률 Progress Bar
-* 실시간 RAM 사용률 그래프
+### 제공 정보
+
+- RAM 사용률
+- 전체 RAM 용량
+- 사용 중인 RAM
+- 사용 가능한 RAM
+- RAM 사용률 Progress Bar
+- 실시간 RAM 사용률 그래프
+
+RAM 정보는 `psutil.virtual_memory()`를 이용하여 수집합니다.
 
 ---
 
-### Settings
+## Disk Monitoring
 
-프로그램의 동작과 화면 설정을 변경할 수 있습니다.
+Windows 시스템의 Disk 상태를 실시간으로 확인할 수 있습니다.
 
-#### Appearance
+### 제공 정보
+
+- Disk 전체 용량
+- Disk 사용량
+- Disk 여유 공간
+- Disk 사용률
+- Disk Read 속도
+- Disk Write 속도
+- Disk 사용률 Progress Bar
+- 실시간 Disk Read / Write 그래프
+
+Disk Read / Write 속도는 누적 I/O 값을 주기적으로 비교하여
+초당 데이터 처리량을 계산하는 방식으로 구현했습니다.
+
+---
+
+## Network Monitoring
+
+시스템의 Network 송수신 상태를 실시간으로 확인할 수 있습니다.
+
+### 제공 정보
+
+- 실시간 Download 속도
+- 실시간 Upload 속도
+- 누적 수신 데이터
+- 누적 송신 데이터
+- 실시간 Download / Upload 그래프
+
+`psutil.net_io_counters()`에서 제공하는 누적 송수신 데이터를 이용하여
+이전 측정값과 현재 측정값의 차이를 계산하고 실시간 속도를 구합니다.
+
+---
+
+# Settings
+
+프로그램의 동작과 화면 관련 설정을 변경할 수 있습니다.
+
+## Appearance
 
 프로그램의 화면 테마를 변경할 수 있습니다.
 
-* Dark
-* Light
-* System
+- Dark
+- Light
+- System
 
-#### Update Interval
+## Update Interval
 
-CPU, GPU, RAM 정보를 가져오는 주기를 변경할 수 있습니다.
+시스템 정보를 가져오는 주기를 변경할 수 있습니다.
 
-* 0.5 second
-* 1 second
-* 2 seconds
+- 0.5 second
+- 1 second
+- 2 seconds
 
-#### Graph History
+## Graph History
 
-실시간 그래프에 유지할 데이터 범위를 변경할 수 있습니다.
+실시간 그래프에 유지할 데이터 개수를 변경할 수 있습니다.
 
-* 30
-* 60
-* 120
+- 30
+- 60
+- 120
 
-설정값은 `config.py`에서 관리하며 각 모니터링 페이지에서 공통으로 사용합니다.
+설정값은 `config.py`에서 관리하며
+각 모니터링 페이지에서 공통으로 사용할 수 있도록 구성했습니다.
+
+---
+
+# Tech Stack
+
+| Category | Technology |
+|---|---|
+| Language | Python |
+| GUI | CustomTkinter / Tkinter |
+| System Monitoring | psutil |
+| GPU Monitoring | NVIDIA NVML (`nvidia-ml-py`) |
+| Data Visualization | Matplotlib |
+| Version Control | Git |
+| Repository | GitHub |
 
 ---
 
-## 🛠️ Tech Stack
-
-* Python
-* CustomTkinter
-* psutil
-* NVIDIA NVML (`nvidia-ml-py`)
-* Matplotlib
-* Tkinter
-
----
 
 ## Project Structure
 
-```text
 pc_performance_monitor_program/
 │
 ├── main.py
@@ -121,186 +187,102 @@ pc_performance_monitor_program/
 ├── config.py
 ├── requirements.txt
 ├── README.md
+├── .gitignore
+├── PC Monitor.spec
 │
 ├── ui/
 │   ├── __init__.py
-│   ├── dashboard.py
-│   ├── cpu_page.py
-│   ├── gpu_page.py
-│   ├── ram_page.py
+│   ├── Dashboard.py
+│   ├── CPU_page.py
+│   ├── GPU_page.py
+│   ├── RAM_page.py
+│   ├── disk_page.py
+│   ├── network_page.py
 │   └── settings.py
 │
-└── assets/
-    └── screenshots/
-```
+├── result/
+│   ├── dashboard2.png
+│   ├── cpu.png
+│   ├── gpu.png
+│   ├── ram.png
+│   ├── disk.png
+│   ├── network.png
+│   └── settings.png
+│
+├── build/
+│   └── PC Monitor/
+│       └── ...
+│
+└── dist/
+    └── PC Monitor/
+        ├── PC Monitor.exe
+        └── _internal/
 
-### `main.py`
 
-프로그램의 메인 실행 파일입니다.
+# Windows Build
 
-* CustomTkinter Window 생성
-* Sidebar 생성
-* 페이지 관리
-* Dashboard / CPU / GPU / RAM / Settings 페이지 이동
+PyInstaller를 사용하여 Windows 실행 파일을 생성했습니다.
 
-### `monitor.py`
+처음에는 `onefile` 방식으로 패키징했지만,
+실행 시 압축 해제 과정 때문에 시작 속도가 느려
+최종적으로 `onedir` 방식을 사용했습니다.
 
-PC의 하드웨어 정보를 수집하는 역할을 담당합니다.
-
-UI 코드와 하드웨어 모니터링 코드를 분리하기 위해 별도의 파일로 관리합니다.
-
-현재 다음 정보를 수집합니다.
-
-* CPU 사용률
-* CPU 이름
-* CPU 물리 코어
-* CPU 논리 코어
-* RAM 사용량
-* RAM 사용률
-* NVIDIA GPU 사용률
-* GPU 온도
-* VRAM 사용량
-
-### `config.py`
-
-프로그램 전체에서 공통으로 사용하는 설정값을 관리합니다.
-
-현재 다음 설정을 관리합니다.
-
-```python
-UPDATE_INTERVAL = 1000
-GRAPH_HISTORY = 30
-```
-
-`UPDATE_INTERVAL`은 하드웨어 정보 업데이트 주기를 관리하고,
-`GRAPH_HISTORY`는 실시간 그래프에 유지할 데이터 개수를 관리합니다.
-
-### `ui/`
-
-각 페이지의 UI를 관리합니다.
-
-* `dashboard.py` - 전체 시스템 Dashboard
-* `cpu_page.py` - CPU 상세 모니터링
-* `gpu_page.py` - GPU 상세 모니터링
-* `ram_page.py` - RAM 상세 모니터링
-* `settings.py` - 프로그램 설정
-
----
-
-## Requirements
-
-프로젝트에서 사용하는 주요 Python 라이브러리는 다음과 같습니다.
-
-```text
-customtkinter
-psutil
-nvidia-ml-py
-matplotlib
-```
-
-필요한 라이브러리는 `requirements.txt`를 이용하여 한 번에 설치할 수 있습니다.
+현재 빌드 명령어는 다음과 같습니다.
 
 ```bash
-pip install -r requirements.txt
-```
+pyinstaller --noconfirm --onedir --windowed --name "PC Monitor" main.py
 
----
 
-## Run
+# Exception Handling
 
-프로젝트를 다운로드한 후 프로젝트 폴더로 이동합니다.
+시스템 정보를 조회하는 과정에서 오류가 발생해도
+프로그램 전체가 종료되지 않도록 예외 처리를 적용했습니다.
 
-```bash
-cd pc_performance_monitor_program
-```
+현재 예외 처리가 적용된 영역은 다음과 같습니다.
 
-필요한 라이브러리를 설치합니다.
+- CPU 정보 조회
+- RAM 정보 조회
+- NVIDIA GPU 정보 조회
+- Disk 정보 조회
+- Network 정보 조회
 
-```bash
-pip install -r requirements.txt
-```
+특히 GPU 정보는 NVIDIA NVML을 사용하기 때문에
+GPU 또는 Driver 환경에 따라 일부 정보 조회가 실패할 수 있습니다.
 
-프로그램을 실행합니다.
+이 경우 프로그램 전체를 종료하지 않고 다음과 같이 처리합니다.
 
-```bash
-python main.py
-```
+- GPU 이름 조회 실패 시 기본값 표시
+- GPU 사용률 조회 실패 시 `N/A` 표시
+- GPU 온도 조회 실패 시 `N/A` 표시
+- VRAM 조회 실패 시 기본값 반환
+- 마지막 정상 측정값을 활용하여 일시적인 NVML 오류 대응
 
----
+이를 통해 특정 하드웨어 정보를 가져오지 못하더라도
+나머지 모니터링 기능은 계속 사용할 수 있도록 구성했습니다.
 
-## Screenshots
-
-현재 개발 중인 PC Monitor의 실행 화면입니다.
-
-<!--
-이미지가 assets/screenshots/dashboard.png에 있다면
-아래 주석을 제거해서 사용할 수 있습니다.
-
-![Dashboard](assets/screenshots/dashboard.png)
--->
-
----
-
-## Planned Features
-
-앞으로 다음 기능들을 추가할 예정입니다.
-
-* Disk 사용량 모니터링
-* Disk 읽기 / 쓰기 속도
-* Network 다운로드 속도
-* Network 업로드 속도
-* 프로세스별 CPU / RAM 사용량
-* Dashboard UI 개선
-* 그래프 기능 개선
-* 설정값 저장
-* 다중 GPU 지원
-* 시스템 정보 표시
-* Windows 실행 파일 (`.exe`) 패키징
-
----
-
-## Development Status
-
-**Development in Progress**
+# Development Status
 
 현재 구현된 기능:
 
-* Dashboard
-* CPU 상세 모니터링
-* GPU 상세 모니터링
-* RAM 상세 모니터링
-* 실시간 사용률 그래프
-* Dark / Light / System 테마
-* 모니터링 업데이트 주기 설정
-* Graph History 설정
-
-다음 단계에서는 Disk 및 Network 모니터링 기능을 추가하고 전체 UI를 개선할 예정입니다.
-
-### Disk Monitoring
-
-- Disk 전체 용량 확인
-- Disk 사용량 및 여유 공간 확인
-- Disk 사용률 실시간 모니터링
-- Disk Read / Write 데이터 모니터링
-- Disk 상태 실시간 그래프 제공
-
-
-### Network Monitoring
-
-- 실시간 Download 속도 모니터링
-- 실시간 Upload 속도 모니터링
-- 누적 수신 데이터 확인
-- 누적 송신 데이터 확인
-- Download / Upload 실시간 그래프 제공
-
-
-Dashboard에서 주요 시스템 상태를 한눈에 확인할 수 있습니다.
-
-- CPU 사용률
-- GPU 사용률
-- RAM 사용률
-- Disk 사용률
-- Network Download / Upload 속도
+- [x] Dashboard
+- [x] CPU 상세 모니터링
+- [x] GPU 상세 모니터링
+- [x] RAM 상세 모니터링
+- [x] Disk 상세 모니터링
+- [x] Network 상세 모니터링
+- [x] CPU 실시간 그래프
+- [x] GPU 실시간 그래프
+- [x] RAM 실시간 그래프
+- [x] Disk Read / Write 그래프
+- [x] Network Download / Upload 그래프
+- [x] Dark / Light / System 테마
+- [x] Update Interval 설정
+- [x] Graph History 설정
+- [x] 시스템 정보 조회 예외 처리
+- [x] NVIDIA NVML 오류 처리
+- [x] Windows 실행 파일 패키징
+- [x] PyInstaller `onedir` 방식 빌드
+- [x] Git / GitHub 버전 관리
 
 ## Result_screenshot
 
@@ -331,3 +313,24 @@ Dashboard에서 주요 시스템 상태를 한눈에 확인할 수 있습니다.
 ### Network_result
 
 ![Network_page](result/network.png)
+
+### Exe_result
+
+![Exe_page](result/exe.png)
+
+
+## 실행 결과(최종)
+
+### Run_result(Final Result)
+
+![Final_Result_page](result/run.png)
+
+
+# Planned Features
+
+- [ ] 프로세스별 CPU / RAM 사용량
+- [ ] 설정값 영구 저장
+- [ ] 다중 GPU 지원
+- [ ] 시스템 상세 정보 페이지
+- [ ] 프로그램 아이콘 적용
+- [ ] 배포용 UI 추가 개선

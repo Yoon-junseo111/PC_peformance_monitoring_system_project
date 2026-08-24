@@ -10,3 +10,7 @@ env/
 
 # VS Code
 .vscode/
+
+# build, dist folder
+/build
+/dist
