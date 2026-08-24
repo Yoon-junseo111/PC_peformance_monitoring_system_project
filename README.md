@@ -264,25 +264,25 @@ GPU 또는 Driver 환경에 따라 일부 정보 조회가 실패할 수 있습�
 
 현재 구현된 기능:
 
-- [x] Dashboard
-- [x] CPU 상세 모니터링
-- [x] GPU 상세 모니터링
-- [x] RAM 상세 모니터링
-- [x] Disk 상세 모니터링
-- [x] Network 상세 모니터링
-- [x] CPU 실시간 그래프
-- [x] GPU 실시간 그래프
-- [x] RAM 실시간 그래프
-- [x] Disk Read / Write 그래프
-- [x] Network Download / Upload 그래프
-- [x] Dark / Light / System 테마
-- [x] Update Interval 설정
-- [x] Graph History 설정
-- [x] 시스템 정보 조회 예외 처리
-- [x] NVIDIA NVML 오류 처리
-- [x] Windows 실행 파일 패키징
-- [x] PyInstaller `onedir` 방식 빌드
-- [x] Git / GitHub 버전 관리
+- Dashboard
+- CPU 상세 모니터링
+- GPU 상세 모니터링
+- RAM 상세 모니터링
+- Disk 상세 모니터링
+- Network 상세 모니터링
+- CPU 실시간 그래프
+- GPU 실시간 그래프
+- RAM 실시간 그래프
+- Disk Read / Write 그래프
+- Network Download / Upload 그래프
+- Dark / Light / System 테마
+- Update Interval 설정
+- Graph History 설정
+- 시스템 정보 조회 예외 처리
+- NVIDIA NVML 오류 처리
+- Windows 실행 파일 패키징
+- PyInstaller `onedir` 방식 빌드
+- Git / GitHub 버전 관리
 
 ## Result_screenshot
 
@@ -323,14 +323,16 @@ GPU 또는 Driver 환경에 따라 일부 정보 조회가 실패할 수 있습�
 
 ### Run_result(Final Result)
 
+![Final_Result_page](result/run2.png)
+
 ![Final_Result_page](result/run.png)
 
 
 # Planned Features
 
-- [ ] 프로세스별 CPU / RAM 사용량
-- [ ] 설정값 영구 저장
-- [ ] 다중 GPU 지원
-- [ ] 시스템 상세 정보 페이지
-- [ ] 프로그램 아이콘 적용
-- [ ] 배포용 UI 추가 개선
+- 프로세스별 CPU / RAM 사용량
+- 설정값 영구 저장
+- 다중 GPU 지원
+- 시스템 상세 정보 페이지
+- 프로그램 아이콘 적용
+- 배포용 UI 추가 개선
