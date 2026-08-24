@@ -348,7 +348,7 @@ GPU 또는 Driver 환경에 따라 일부 정보 조회가 실패할 수 있습�
 ![Exe_page](result/exe.png)
 
 ### dist build folder
-![dist_build_page](result/run2.png)
+![dist_build_page](result/dist_build.png)
 
 ---
 
