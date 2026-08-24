@@ -308,7 +308,8 @@ GPU 또는 Driver 환경에 따라 일부 정보 조회가 실패할 수 있습�
 - NVIDIA NVML 오류 처리
 - Windows 실행 파일 패키징
 - PyInstaller `onedir` 방식 빌드
-- Git / GitHub 버전 관리
+- Git / GitHub 버전 관리wnstj5694!
+
 
 ---
 
@@ -346,13 +347,14 @@ GPU 또는 Driver 환경에 따라 일부 정보 조회가 실패할 수 있습�
 
 ![Exe_page](result/exe.png)
 
+### dist build folder
+![dist_build_page](result/run2.png)
+
 ---
 
 ## Final Result
 
 PC Monitor v1.0의 최종 실행 화면입니다.
-
-![Final_Result_page](result/run2.png)
 
 ![Final_Result_page](result/run.png)
 
